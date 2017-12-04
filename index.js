@@ -4,16 +4,27 @@ const colors = require('colors')
 const Table = require('cli-table2')
 
 
-const key = 'your_api_key';
-const b64secret = 'your_b64_secret';
-const passphrase = 'your_passphrase';
+const key = '';
+const b64secret = '';
+const passphrase = '';
 
 const apiURI = 'https://api.gdax.com';
 const sandboxURI = 'https://api-public.sandbox.gdax.com';
 
 const authedClient = new Gdax.AuthenticatedClient(key, b64secret, passphrase, sandboxURI);
 const publicClient = new Gdax.PublicClient();
-const websocket = new Gdax.WebsocketClient(['ETH-USD']);
+//const websocket = new Gdax.WebsocketClient(['ETH-USD']);
+
+const websocket = new Gdax.WebsocketClient(
+	['ETH-USD'],
+	'https://api-public.sandbox.gdax.com',
+	{
+	  key: key,
+	  secret: b64secret,
+	  passphrase: passphrase,
+	},
+	{ heartbeat: true }
+);
 
 cfonts.say('KRYPTO', {
 	font: 'block',
@@ -49,7 +60,6 @@ function getOrders() {
 	);
 }
 
-
 	// Buy 1 BTC @ 100 USD
 const buyParams = {
 	'price': '100.00', // USD
@@ -57,11 +67,28 @@ const buyParams = {
 	'product_id': 'BTC-USD',
   };
 
+// Sell 1 BTC @ 110 USD
+const sellParams = {
+	'price': '110.00', // USD
+	'size': '1', // BTC
+	'product_id': 'BTC-USD',
+  };
+
+function placeSellOrder(sellParams){
+	authedClient.sell(sellParams, callback)
+		.then(data => {
+			console.log("Sell Order Data: " + data.status)
+		})
+		.catch(error => {
+			// handle the error
+		}
+	);
+}
 
 function placeBuyOrder(buyParams){
 	authedClient.buy(buyParams)
 		.then(data => {
-		console.log("Buy Order Data: " + data.status)
+			console.log("Buy Order Data: " + data.status)
 		})
 		.catch(error => {
 			// handle the error
@@ -114,3 +141,6 @@ function turnOnPriceStream(){
 	websocket.on('error', err => { console.log(err) });
 	websocket.on('close', () => { /* ... */ });
 }
+
+
+turnOnPriceStream();
