@@ -1,30 +1,23 @@
+const config = require('./config/config.js');
 const Gdax = require('gdax');
 const cfonts = require('cfonts')
 const colors = require('colors')
 const Table = require('cli-table2')
 
-
-const key = '';
-const b64secret = '';
-const passphrase = '';
-
-const apiURI = 'https://api.gdax.com';
-const sandboxURI = 'https://api-public.sandbox.gdax.com';
-
-const authedClient = new Gdax.AuthenticatedClient(key, b64secret, passphrase, sandboxURI);
+const authedClient = new Gdax.AuthenticatedClient(config.key, config.b64secret, config.passphrase, config.uri);
 const publicClient = new Gdax.PublicClient();
-//const websocket = new Gdax.WebsocketClient(['ETH-USD']);
+const websocket = new Gdax.WebsocketClient(['ETH-USD']);
 
-const websocket = new Gdax.WebsocketClient(
-	['ETH-USD'],
-	'https://api-public.sandbox.gdax.com',
-	{
-	  key: key,
-	  secret: b64secret,
-	  passphrase: passphrase,
-	},
-	{ heartbeat: true }
-);
+// const websocket = new Gdax.WebsocketClient(
+// 	['ETH-USD'],
+// 	'https://api-public.sandbox.gdax.com',
+// 	{
+// 	  key: key,
+// 	  secret: b64secret,
+// 	  passphrase: passphrase,
+// 	},
+// 	{ heartbeat: true }
+// );
 
 cfonts.say('KRYPTO', {
 	font: 'block',
